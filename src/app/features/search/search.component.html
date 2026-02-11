@@ -11,35 +11,26 @@
   <p class="search__hint">Results update as you type.</p>
 </section>
 
-<section class="results" aria-live="polite" *ngIf="vm$ | async as vm">
-  <div class="results__state" *ngIf="vm.state === 'idle'">
-    No results yet. Start typing to find your next show.
-  </div>
-  <div class="results__state" *ngIf="vm.state === 'loading'">
-    Searching for “{{ vm.query }}”...
-  </div>
-  <div class="results__state" *ngIf="vm.state === 'error'">
-    Something went wrong. Please try again.
-  </div>
-  <div class="results__state" *ngIf="vm.state === 'empty'">
-    No results for “{{ vm.query }}”.
-  </div>
-
-  <div class="results__grid" *ngIf="vm.state === 'results'">
-    <article class="show-card" *ngFor="let show of vm.results; trackBy: trackByShowId">
-      <img class="show-card__image" [src]="show.imageUrl" [alt]="show.title" loading="lazy" />
-      <div class="show-card__body">
-        <div class="show-card__header">
-          <h3 class="show-card__title">{{ show.title }}</h3>
-          <span class="show-card__rating" *ngIf="show.rating !== null">
-            {{ show.rating | number: '1.1-1' }}
-          </span>
-        </div>
-        <p class="show-card__summary" *ngIf="show.summary">{{ show.summary }}</p>
-        <p class="show-card__summary show-card__summary--empty" *ngIf="!show.summary">
-          No summary available.
-        </p>
+@if (vm$ | async; as vm) {
+  <section class="results" aria-live="polite">
+    @if (vm.state === 'idle') {
+      <div class="results__state">No results yet. Start typing to find your next show.</div>
+    }
+    @if (vm.state === 'loading') {
+      <div class="results__state">Searching for "{{ vm.query }}"...</div>
+    }
+    @if (vm.state === 'error') {
+      <div class="results__state">Something went wrong. Please try again.</div>
+    }
+    @if (vm.state === 'empty') {
+      <div class="results__state">No results for "{{ vm.query }}".</div>
+    }
+    @if (vm.state === 'results') {
+      <div class="results__grid">
+        @for (show of vm.results; track show.id) {
+          <app-show-card [show]="show" />
+        }
       </div>
-    </article>
-  </div>
-</section>
+    }
+  </section>
+}

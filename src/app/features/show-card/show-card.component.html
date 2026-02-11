@@ -1,0 +1,18 @@
+<article class="show-card">
+  <img class="show-card__image" [src]="show.imageUrl" [alt]="show.title" loading="lazy" />
+  <div class="show-card__body">
+    <div class="show-card__header">
+      <h3 class="show-card__title">{{ show.title }}</h3>
+      @if (show.rating !== null) {
+        <span class="show-card__rating">
+          {{ show.rating | number: '1.1-1' }}
+        </span>
+      }
+    </div>
+    @if (show.summary) {
+      <p class="show-card__summary">{{ show.summary }}</p>
+    } @else {
+      <p class="show-card__summary show-card__summary--empty">No summary available.</p>
+    }
+  </div>
+</article>

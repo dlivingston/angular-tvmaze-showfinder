@@ -1,8 +1,9 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { AsyncPipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { catchError, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { TvMazeService, Show } from '../../core/services/tvmaze.service';
+import { ShowCardComponent } from '../show-card/show-card.component';
 
 type ViewState = 'idle' | 'loading' | 'error' | 'empty' | 'results';
 
@@ -15,7 +16,7 @@ type ViewModel = {
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe, DecimalPipe, NgIf, NgFor],
+  imports: [ReactiveFormsModule, AsyncPipe, ShowCardComponent],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -48,8 +49,4 @@ export class SearchComponent {
   );
 
   constructor(private readonly tvMazeService: TvMazeService) {}
-
-  trackByShowId(index: number, show: Show): number {
-    return show.id;
-  }
 }

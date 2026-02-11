@@ -1,0 +1,45 @@
+<section class="search">
+  <label class="search__label" for="show-search">Search for a show</label>
+  <input
+    class="search__input"
+    id="show-search"
+    type="text"
+    autocomplete="off"
+    placeholder="Try “The Expanse” or “The Bear”"
+    [formControl]="searchControl"
+  />
+  <p class="search__hint">Results update as you type.</p>
+</section>
+
+<section class="results" aria-live="polite" *ngIf="vm$ | async as vm">
+  <div class="results__state" *ngIf="vm.state === 'idle'">
+    No results yet. Start typing to find your next show.
+  </div>
+  <div class="results__state" *ngIf="vm.state === 'loading'">
+    Searching for “{{ vm.query }}”...
+  </div>
+  <div class="results__state" *ngIf="vm.state === 'error'">
+    Something went wrong. Please try again.
+  </div>
+  <div class="results__state" *ngIf="vm.state === 'empty'">
+    No results for “{{ vm.query }}”.
+  </div>
+
+  <div class="results__grid" *ngIf="vm.state === 'results'">
+    <article class="show-card" *ngFor="let show of vm.results; trackBy: trackByShowId">
+      <img class="show-card__image" [src]="show.imageUrl" [alt]="show.title" loading="lazy" />
+      <div class="show-card__body">
+        <div class="show-card__header">
+          <h3 class="show-card__title">{{ show.title }}</h3>
+          <span class="show-card__rating" *ngIf="show.rating !== null">
+            {{ show.rating | number: '1.1-1' }}
+          </span>
+        </div>
+        <p class="show-card__summary" *ngIf="show.summary">{{ show.summary }}</p>
+        <p class="show-card__summary show-card__summary--empty" *ngIf="!show.summary">
+          No summary available.
+        </p>
+      </div>
+    </article>
+  </div>
+</section>

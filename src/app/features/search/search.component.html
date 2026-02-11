@@ -1,4 +1,4 @@
-<section class="search">
+<section class="search" role="search" aria-label="TV show search">
   <label class="search__label" for="show-search">Search for a show</label>
   <input
     class="search__input"
@@ -6,24 +6,28 @@
     type="text"
     autocomplete="off"
     placeholder="Try “The Expanse” or “The Bear”"
+    aria-describedby="show-search-hint"
     [formControl]="searchControl"
   />
-  <p class="search__hint">Results update as you type.</p>
+  <p class="search__hint" id="show-search-hint">Results update as you type.</p>
 </section>
 
 @if (vm$ | async; as vm) {
-  <section class="results" aria-live="polite">
+  <section class="results" [attr.aria-busy]="vm.state === 'loading'" aria-live="polite">
+    <h2 class="sr-only">Search results</h2>
     @if (vm.state === 'idle') {
-      <div class="results__state">No results yet. Start typing to find your next show.</div>
+      <div class="results__state" role="status">No results yet. Start typing to find your next show.</div>
     }
     @if (vm.state === 'loading') {
-      <div class="results__state">Searching for "{{ vm.query }}"...</div>
+      <div class="results__state" role="status" aria-atomic="true">
+        Searching for "{{ vm.query }}"...
+      </div>
     }
     @if (vm.state === 'error') {
-      <div class="results__state">Something went wrong. Please try again.</div>
+      <div class="results__state" role="alert">Something went wrong. Please try again.</div>
     }
     @if (vm.state === 'empty') {
-      <div class="results__state">No results for "{{ vm.query }}".</div>
+      <div class="results__state" role="status">No results for "{{ vm.query }}".</div>
     }
     @if (vm.state === 'results') {
       <div class="results__grid">

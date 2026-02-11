@@ -4,7 +4,7 @@
     <div class="show-card__header">
       <h3 class="show-card__title">{{ show.title }}</h3>
       @if (show.rating !== null) {
-        <span class="show-card__rating">
+        <span class="show-card__rating" [attr.aria-label]="'Rating ' + show.rating + ' out of 10'">
           {{ show.rating | number: '1.1-1' }}
         </span>
       }

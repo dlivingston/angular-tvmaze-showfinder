@@ -2,24 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-export type Show = {
-  id: number;
-  title: string;
-  rating: number | null;
-  summary: string;
-  imageUrl: string;
-};
-
-type TvMazeSearchResult = {
-  show: {
-    id: number;
-    name: string;
-    rating: { average: number | null };
-    image: { medium: string | null; original: string | null } | null;
-    summary: string | null;
-  };
-};
+import { Show } from '../models/show.model';
+import { mapTvMazeSearchResultToShow } from './tvmaze.mapper';
+import { TvMazeSearchResult } from './tvmaze.types';
 
 @Injectable({ providedIn: 'root' })
 export class TvMazeService {
@@ -37,24 +22,7 @@ export class TvMazeService {
 
     const url = `${this.baseUrl}?q=${encodeURIComponent(trimmed)}`;
     return this.http.get<TvMazeSearchResult[]>(url).pipe(
-      map((results) =>
-        results.map(({ show }) => ({
-          id: show.id,
-          title: show.name,
-          rating: show.rating?.average ?? null,
-          summary: this.stripHtml(show.summary),
-          imageUrl: show.image?.medium ?? show.image?.original ?? this.fallbackImage
-        }))
-      )
+      map((results) => results.map((result) => mapTvMazeSearchResultToShow(result, this.fallbackImage)))
     );
-  }
-
-  private stripHtml(input: string | null | undefined): string {
-    if (!input) {
-      return '';
-    }
-
-    const doc = new DOMParser().parseFromString(input, 'text/html');
-    return doc.body.textContent?.trim() ?? '';
   }
 }

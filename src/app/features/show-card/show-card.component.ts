@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { Show } from '../../core/services/tvmaze.service';
+import { Show } from '../../core/models/show.model';
 
 @Component({
   selector: 'app-show-card',

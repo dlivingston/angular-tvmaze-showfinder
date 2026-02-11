@@ -2,7 +2,8 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
 import { catchError, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
-import { TvMazeService, Show } from '../../core/services/tvmaze.service';
+import { Show } from '../../core/models/show.model';
+import { TvMazeService } from '../../core/services/tvmaze.service';
 import { ShowCardComponent } from '../show-card/show-card.component';
 
 type ViewState = 'idle' | 'loading' | 'error' | 'empty' | 'results';

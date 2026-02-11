@@ -1,59 +1,97 @@
-# AngularTvmazeShowfinder
+# Angular TVMaze Show Finder
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+Small Angular application for searching TV shows via the public TVMaze API.
+The project is intentionally focused on clean architecture, reactive data flow with RxJS, and clear UI states.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- Debounced show search input
+- Responsive results grid
+- Show cards with poster, title, rating, and summary
+- Explicit UI states:
+  - Loading
+  - Empty results
+  - Error
+- Fallback handling for missing poster/rating/summary data
 
-```bash
-ng serve
-```
+## Stack
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Angular 21 (standalone components)
+- RxJS
+- SCSS
+- Vitest via Angular test tooling
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Run locally
 
 ```bash
-ng build
+npm install
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+App runs at `http://localhost:4200`.
 
-## Running unit tests
+## Scripts
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+- `npm start` - start development server
+- `npm run build` - create production build
+- `npm run watch` - development build in watch mode
+- `npm test` - run unit tests
+
+## Architecture
+
+```text
+src/app/
+  core/
+    models/
+      show.model.ts
+    services/
+      tvmaze.service.ts
+      tvmaze.types.ts
+      tvmaze.mapper.ts
+  features/
+    search/
+      search.component.ts
+    show-card/
+      show-card.component.ts
+```
+
+### Component responsibilities
+
+- `SearchComponent`: container component; owns input stream and state transitions.
+- `ShowCardComponent`: presentational component; renders normalized show data only.
+- `TvMazeService`: API boundary; fetches TVMaze data and returns app-domain models.
+
+## Data flow
+
+`FormControl.valueChanges` -> `trim` -> `debounceTime` -> `distinctUntilChanged` -> `switchMap` -> `vm$` rendered with `AsyncPipe`.
+
+## Data boundary notes
+
+- External API types are isolated in `tvmaze.types.ts`.
+- App-facing domain model is defined in `show.model.ts`.
+- Mapping and normalization are centralized in `tvmaze.mapper.ts`.
+- Components consume only normalized `Show` models.
+
+## Testing
+
+Current tests cover:
+
+- Mapper normalization logic (`tvmaze.mapper.spec.ts`)
+- Search state transitions and debounce behavior (`search.component.spec.ts`)
+- Root app render smoke checks (`app.spec.ts`)
+
+Run tests with:
 
 ```bash
-ng test
+npm test
 ```
 
-## Running end-to-end tests
+## Scope and non-goals
 
-For end-to-end (e2e) testing, run:
+Out of scope for this project:
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Routing
+- Authentication
+- Pagination
+- Global state libraries (NgRx, etc.)
+- Backend services
